@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thư viện lớp</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <h1>Thư viện của lớp</h1>
+    <p>Sách yêu thích: <span id="fav-count">0</span></p>
+  </header>
+
+  <main>
+    <section class="toolbar">
+      <input type="text" id="search" placeholder="Tìm theo tên sách...">
+      <select id="genre-filter">
+        <option value="all">Tất cả thể loại</option>
+      </select>
+    </section>
+
+    <p id="status" class="status"></p>
+
+    <section id="book-grid" class="grid"></section>
+
+    <section class="add-book">
+      <h2>Thêm sách mới</h2>
+      <form id="book-form" novalidate>
+        <label>Tên sách
+          <input type="text" id="title">
+          <small class="error" id="err-title"></small>
+        </label>
+        <label>Tác giả
+          <input type="text" id="author">
+          <small class="error" id="err-author"></small>
+        </label>
+        <label>Thể loại
+          <select id="genre">
+            <option value="">-- Chọn thể loại --</option>
+          </select>
+          <small class="error" id="err-genre"></small>
+        </label>
+        <label>Năm xuất bản
+          <input type="number" id="year">
+          <small class="error" id="err-year"></small>
+        </label>
+        <button type="submit">Thêm sách</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Bài thực hành 2</p>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
