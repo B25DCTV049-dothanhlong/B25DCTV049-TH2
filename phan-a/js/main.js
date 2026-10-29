@@ -1,4 +1,5 @@
-import { fetchBooks, addBook } from "./api.js";
+import { fetchBooks, addBook, deleteBook } from "./api.js";
+import { initTheme } from "./theme.js";
 import { renderBooks } from "./render.js";
 import { getGenres, filterBooks, fillGenreOptions } from "./filter.js";
 import { loadFavs, saveFavs } from "./storage.js";
@@ -10,6 +11,7 @@ const searchInput = document.getElementById("search");
 const genreFilter = document.getElementById("genre-filter");
 const genreForm = document.getElementById("genre");
 const favCountEl = document.getElementById("fav-count");
+const form = document.getElementById("book-form");
 
 let books = [];
 let favs = loadFavs();
@@ -32,12 +34,17 @@ function toggleFav(id) {
   render();
 }
 
-function deleteBook(id) {
+async function removeBook(id) {
   if (!confirm("Bạn chắc chắn muốn xóa cuốn sách này?")) return;
-  books = books.filter((b) => b.id !== id);
-  favs = favs.filter((x) => x !== id);
-  saveFavs(favs);
-  render();
+  try {
+    await deleteBook(id);
+    books = books.filter((b) => b.id !== id);
+    favs = favs.filter((x) => x !== id);
+    saveFavs(favs);
+    render();
+  } catch (err) {
+    statusEl.textContent = "Lỗi: " + err.message;
+  }
 }
 
 // Event delegation: chỉ 1 listener cho cả lưới
@@ -47,25 +54,11 @@ grid.addEventListener("click", (e) => {
   const id = btn.closest(".card").dataset.id;
 
   if (btn.dataset.action === "fav") toggleFav(id);
-  if (btn.dataset.action === "delete") deleteBook(id);
+  if (btn.dataset.action === "delete") removeBook(id);
 });
-
-async function init() {
-  statusEl.textContent = "Đang tải...";
-  try {
-    books = await fetchBooks();
-    const genres = getGenres(books);
-    fillGenreOptions(genreFilter, genres);
-    fillGenreOptions(genreForm, genres);
-    render();
-  } catch (e) {
-    statusEl.textContent = "Lỗi: " + e.message;
-  }
-}
 
 searchInput.addEventListener("input", render);
 genreFilter.addEventListener("change", render);
-const form = document.getElementById("book-form");
 
 // Báo lỗi ngay khi gõ / đổi giá trị
 form.addEventListener("input", () => {
@@ -94,4 +87,18 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+async function init() {
+  statusEl.textContent = "Đang tải...";
+  try {
+    books = await fetchBooks();
+    const genres = getGenres(books);
+    fillGenreOptions(genreFilter, genres);
+    fillGenreOptions(genreForm, genres);
+    render();
+  } catch (e) {
+    statusEl.textContent = "Lỗi: " + e.message;
+  }
+}
+
+initTheme();
 init();

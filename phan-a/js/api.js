@@ -18,3 +18,9 @@ export async function addBook(book) {
   }
   return res.json();
 }
+export async function deleteBook(id) {
+  const res = await fetch(API + "/" + id, { method: "DELETE" });
+  if (!res.ok) {
+    throw new Error("Không xóa được sách (mã lỗi " + res.status + ")");
+  }
+}
